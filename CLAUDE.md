@@ -6,6 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 The same program written several ways, to compare speed, memory use, and output. Each implementation reads one number of seconds per line from stdin and prints it as `1d 1h 1m 2s`. There is no shared code between implementations, so a behavior change has to be made in every source file.
 
+## Comment style
+
+Follow @COMMENT-STYLE.md when writing code comments, commit messages, and documentation.
+
 ## Commands
 
 ```bash
