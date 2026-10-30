@@ -106,8 +106,6 @@ constexpr double max_seconds = 0x1.517ffffffffffp+79;
 
 constexpr size_t max_result_size = 32;
 
-//##### XXX: ToFixed rounds exact ties up, not half-even like printf
-
 std::string split_seconds(double seconds)
 {
     std::string result;
@@ -207,6 +205,20 @@ std::string split_seconds(double seconds)
 
         char tmp[max_result_size] = {'\0'};
         double_conversion::StringBuilder builder(tmp, sizeof(tmp));
+
+        // ToFixed rounds exact ties up, not half-even like printf
+        // so move a tie that should round down to just below it
+        constexpr double scales[] = {1.0, 10.0, 100.0, 1000.0};
+        const double scale = scales[precision];
+        const double scaled = seconds * scale;
+        const double scaled_floor = std::floor(scaled);
+
+        if (scaled - scaled_floor == 0.5 &&
+            std::fma(seconds, scale, -scaled) == 0.0 &&
+            std::fmod(scaled_floor, 2.0) == 0.0)
+        {
+            seconds = std::nextafter(seconds, 0.0);
+        }
 
         //d_to_s.ToPrecision(seconds, precision, &builder);
         d_to_s.ToFixed(seconds, precision, &builder);
