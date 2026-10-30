@@ -102,8 +102,8 @@ foreach my $line (<STDIN>) {
     chomp($line);
 
     if ($line eq "") {
-        print;
-        continue;
+        print "\n";
+        next;
     }
 
     my $seconds = 0;
