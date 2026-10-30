@@ -97,7 +97,7 @@ sub split_seconds {
     return $result;
 }
 
-foreach my $line (<STDIN>) {
+while (my $line = <STDIN>) {
 
     chomp($line);
 
