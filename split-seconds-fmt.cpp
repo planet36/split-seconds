@@ -46,21 +46,16 @@ constexpr int seconds_per_minute = 60;
 constexpr bool print_zero_seconds = false;
 
 /*
-Theoretical max length of output string:
+This is the longest known output:
 
-??? ->
-9223372036854775807d 23h 59m 59.999s
-(size=36)
+0x1.7caa73db624d1p+78 ->
+5201514925802699776d 10012h 26m 40s
+(size=35)
 
-But this output might not even be possible.
-
-0x1.517ffffffffffp+79 ->
-9223372036854773760d
-(size=20)
-
-8640000086399.999 ->
-100000000d 23h 59m 59.999s
-(size=26)
+The hours exceed 23 because my_div_f rounds quo at this magnitude.  The length
+depends on FMA contraction of its remainder, and without that, the longest known
+output has size=34.  A value with days has no decimal places, because precision
+is 0 from 1000 seconds up.
 */
 
 /*

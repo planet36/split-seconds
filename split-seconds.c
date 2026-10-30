@@ -32,21 +32,14 @@ constexpr int seconds_per_minute = 60;
 constexpr bool print_zero_seconds = false;
 
 /*
-Theoretical max length of output string:
+This is the longest known output:
 
-??? ->
-9223372036854775807d 23h 59m 59.999s
-(size=36)
+0x1.7caa73db624d1p+78 ->
+5201514925 100 26m 40s
+(size=22)
 
-But this output might not even be possible.
-
-0x1.517ffffffffffp+79 ->
-9223372036854773760d
-(size=20)
-
-8640000086399.999 ->
-100000000d 23h 59m 59.999s
-(size=26)
+The buffers in split_seconds truncate the days and hours in this output.  A value
+with days has no decimal places, because precision is 0 from 1000 seconds up.
 */
 
 /*
