@@ -15,15 +15,6 @@ gpp $OPTIMIZE_OPTIONS split-seconds-google.cpp -o split-seconds-google -ldouble-
 #include <cmath>
 #include <string>
 
-//##### XXX: only string_view has remove_suffix
-void str_remove_suffix(std::string& s, const std::string::size_type n)
-{
-    if (n > s.size())
-        s.clear();
-    else
-        s.erase(s.size() - n);
-}
-
 void my_div_f(const double x, const double y, double& quo, double& rem)
 {
     quo = std::trunc(x / y);
@@ -58,16 +49,7 @@ constexpr int s_to_d_flags =
     0
     ;
 
-constexpr int d_to_s_flags =
-    double_conversion::DoubleToStringConverter::EMIT_POSITIVE_EXPONENT_SIGN |
-    double_conversion::DoubleToStringConverter::EMIT_TRAILING_DECIMAL_POINT |
-    double_conversion::DoubleToStringConverter::EMIT_TRAILING_ZERO_AFTER_POINT |
-    //double_conversion::DoubleToStringConverter::UNIQUE_ZERO |
-    double_conversion::DoubleToStringConverter::NO_TRAILING_ZERO |
-    double_conversion::DoubleToStringConverter::EMIT_TRAILING_DECIMAL_POINT_IN_EXPONENTIAL |
-    double_conversion::DoubleToStringConverter::EMIT_TRAILING_ZERO_AFTER_POINT_IN_EXPONENTIAL |
-    0
-    ;
+constexpr int d_to_s_flags = double_conversion::DoubleToStringConverter::NO_FLAGS;
 
 constexpr double empty_string_value = 0.0;
 constexpr double junk_string_value = NAN;
@@ -230,15 +212,6 @@ std::string split_seconds(double seconds)
         d_to_s.ToFixed(seconds, precision, &builder);
 
         std::string seconds_str = builder.Finalize();
-
-        if (seconds_str.contains('.'))
-        {
-            while (seconds_str.ends_with('0'))
-                str_remove_suffix(seconds_str, 1);
-
-            if (seconds_str.ends_with('.'))
-                str_remove_suffix(seconds_str, 1);
-        }
 
         result.append(seconds_str);
         result.push_back('s');
