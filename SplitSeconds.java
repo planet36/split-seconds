@@ -77,7 +77,8 @@ class SplitSeconds
         }
 
         if (seconds != 0 || (print_zero_seconds && result.length() == 0)) {
-            // XXX: removes trailing zeros (setMinimumFractionDigits(precision) keeps them)
+            // XXX: DecimalFormat removes trailing zeros unless
+            // setMinimumFractionDigits(precision) is also called.
             /*
             DecimalFormat df = new DecimalFormat("0");
             df.setMaximumFractionDigits(precision);
@@ -85,7 +86,8 @@ class SplitSeconds
             var seconds_str = df.format(seconds);
             */
 
-            // XXX: rounds the shortest decimal form half-up, not the exact value half-even like printf
+            // XXX: String.format rounds the shortest decimal form half-up, but printf
+            // rounds the exact value half-even.
             //String seconds_str = String.format("%." + precision + "f", seconds);
 
             BigDecimal bd = new BigDecimal(seconds).setScale(precision, RoundingMode.HALF_EVEN);

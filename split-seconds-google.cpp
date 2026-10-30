@@ -206,8 +206,8 @@ std::string split_seconds(double seconds)
         char tmp[max_result_size] = {'\0'};
         double_conversion::StringBuilder builder(tmp, sizeof(tmp));
 
-        // ToFixed rounds exact ties up, not half-even like printf
-        // so move a tie that should round down to just below it
+        // ToFixed rounds exact ties up, not half-even like printf, so move a tie that
+        // should round down to just below it.
         constexpr double scales[] = {1.0, 10.0, 100.0, 1000.0};
         const double scale = scales[precision];
         const double scaled = seconds * scale;
