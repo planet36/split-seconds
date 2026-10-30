@@ -1,0 +1,29 @@
+#!/usr/bin/bash
+
+declare -r RESULT_FILE="$1"
+
+if [[ -z "$RESULT_FILE" ]]
+then
+    printf 'Error: Must give result file to create\n' 1>&2
+    exit 1
+fi
+
+{
+seq 0 0.00001 10
+seq 0 0.0001  100
+seq 0 0.001   1000
+seq 0 0.01    10000
+seq 0 0.1     100000
+seq 0 1.0     1000000
+seq 0 10      10000000
+} | sort -g -u -o "$RESULT_FILE"
+
+# Could also do something like this:
+# sort -g -u -o "$RESULT_FILE-NEW" \
+# <(seq 0 0.00001 10      ) \
+# <(seq 0 0.0001  100     ) \
+# <(seq 0 0.001   1000    ) \
+# <(seq 0 0.01    10000   ) \
+# <(seq 0 0.1     100000  ) \
+# <(seq 0 1.0     1000000 ) \
+# <(seq 0 10      10000000)
