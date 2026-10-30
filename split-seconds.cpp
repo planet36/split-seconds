@@ -122,6 +122,29 @@ std::string split_seconds(double seconds)
 
     std::ostringstream oss;
 
+    //oss << std::defaultfloat;
+    oss << std::fixed;
+    oss.precision(precision);
+    oss << seconds;
+    const std::string seconds_str = oss.str();
+    oss.str("");
+    //oss.precision(precision_orig);
+
+    // Rounding can reach 60 seconds, so carry it into the larger units.
+    if (seconds_str.starts_with("60"))
+    {
+        seconds = 0;
+        if (++minutes == seconds_per_minute)
+        {
+            minutes = 0;
+            if (++hours == 24)
+            {
+                hours = 0;
+                ++days;
+            }
+        }
+    }
+
     bool none_printed_yet = true;
 
     if (days != 0)
@@ -153,11 +176,7 @@ std::string split_seconds(double seconds)
         if (!none_printed_yet)
             oss << ' ';
 
-        //oss << std::defaultfloat;
-        oss << std::fixed;
-        oss.precision(precision);
-        oss << seconds << 's';
-        //oss.precision(precision_orig);
+        oss << seconds_str << 's';
         //none_printed_yet = false;
     }
 

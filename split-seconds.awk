@@ -17,7 +17,7 @@ return x < 0.0 ? -x : x
 }
 
 
-function split_seconds(seconds,    days, hours, minutes, none_printed_yet, precision, result) {
+function split_seconds(seconds,    days, hours, minutes, none_printed_yet, precision, result, seconds_str) {
 
 seconds = abs(seconds)
 
@@ -57,6 +57,20 @@ seconds = seconds % seconds_per_minute
 
 # round seconds to precision digits after the decimal point
 #seconds = int(seconds * seconds_num_digits_multiplier + 0.5) / seconds_num_digits_multiplier
+
+seconds_str = sprintf("%.*f", precision, seconds)
+
+# Rounding can reach 60 seconds, so carry it into the larger units.
+if (substr(seconds_str, 1, 2) == "60") {
+    seconds = 0
+    if (++minutes == seconds_per_minute) {
+        minutes = 0
+        if (++hours == 24) {
+            hours = 0
+            ++days
+        }
+    }
+}
 
 if (days != 0) {
     if (none_printed_yet) {
@@ -116,11 +130,11 @@ if (seconds != 0 || (print_zero_seconds && none_printed_yet)) {
 
     if (none_printed_yet) {
         #result = sprintf("%.*g", precision, seconds) "s"
-        result = sprintf("%.*f", precision, seconds) "s"
+        result = seconds_str "s"
     }
     else {
         #result = result " " sprintf("%.*g", precision, seconds) "s"
-        result = result " " sprintf("%.*f", precision, seconds) "s"
+        result = result " " seconds_str "s"
     }
     none_printed_yet = 0
 

@@ -169,6 +169,43 @@ std::string split_seconds(double seconds)
 
     seconds = seconds_int + seconds_frac;
 
+    char tmp[max_result_size] = {'\0'};
+    double_conversion::StringBuilder builder(tmp, sizeof(tmp));
+
+    // ToFixed rounds exact ties up, not half-even like printf, so move a tie that
+    // should round down to just below it.
+    constexpr double scales[] = {1.0, 10.0, 100.0, 1000.0};
+    const double scale = scales[precision];
+    const double scaled = seconds * scale;
+    const double scaled_floor = std::floor(scaled);
+
+    if (scaled - scaled_floor == 0.5 &&
+        std::fma(seconds, scale, -scaled) == 0.0 &&
+        std::fmod(scaled_floor, 2.0) == 0.0)
+    {
+        seconds = std::nextafter(seconds, 0.0);
+    }
+
+    //d_to_s.ToPrecision(seconds, precision, &builder);
+    d_to_s.ToFixed(seconds, precision, &builder);
+
+    std::string seconds_str = builder.Finalize();
+
+    // Rounding can reach 60 seconds, so carry it into the larger units.
+    if (seconds_str.starts_with("60"))
+    {
+        seconds = 0;
+        if (++minutes == seconds_per_minute)
+        {
+            minutes = 0;
+            if (++hours == 24)
+            {
+                hours = 0;
+                ++days;
+            }
+        }
+    }
+
     if (days != 0)
     {
         if (!result.empty())
@@ -197,28 +234,6 @@ std::string split_seconds(double seconds)
     {
         if (!result.empty())
             result.push_back(' ');
-
-        char tmp[max_result_size] = {'\0'};
-        double_conversion::StringBuilder builder(tmp, sizeof(tmp));
-
-        // ToFixed rounds exact ties up, not half-even like printf, so move a tie that
-        // should round down to just below it.
-        constexpr double scales[] = {1.0, 10.0, 100.0, 1000.0};
-        const double scale = scales[precision];
-        const double scaled = seconds * scale;
-        const double scaled_floor = std::floor(scaled);
-
-        if (scaled - scaled_floor == 0.5 &&
-            std::fma(seconds, scale, -scaled) == 0.0 &&
-            std::fmod(scaled_floor, 2.0) == 0.0)
-        {
-            seconds = std::nextafter(seconds, 0.0);
-        }
-
-        //d_to_s.ToPrecision(seconds, precision, &builder);
-        d_to_s.ToFixed(seconds, precision, &builder);
-
-        std::string seconds_str = builder.Finalize();
 
         result.append(seconds_str);
         result.push_back('s');

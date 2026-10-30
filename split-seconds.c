@@ -109,6 +109,24 @@ void split_seconds(double seconds, char* result, const size_t result_size)
 
     seconds = seconds_int + seconds_frac;
 
+    char seconds_str[sizeof(" 10.000s")] = {};
+    (void)snprintf(seconds_str, sizeof(seconds_str), "%.*f", precision, seconds);
+
+    // Rounding can reach 60 seconds, so carry it into the larger units.
+    if (strncmp(seconds_str, "60", 2) == 0)
+    {
+        seconds = 0;
+        if (++minutes == seconds_per_minute)
+        {
+            minutes = 0;
+            if (++hours == 24)
+            {
+                hours = 0;
+                ++days;
+            }
+        }
+    }
+
     bool none_printed_yet = true;
 
     char days_buf[sizeof("100000000d")] = {};
@@ -136,7 +154,7 @@ void split_seconds(double seconds, char* result, const size_t result_size)
 
     if (seconds != 0 || (print_zero_seconds && none_printed_yet))
     {
-        (void)snprintf(seconds_buf, sizeof(seconds_buf), "%s%.*fs", (!none_printed_yet ? " " : ""), precision, seconds);
+        (void)snprintf(seconds_buf, sizeof(seconds_buf), "%s%ss", (!none_printed_yet ? " " : ""), seconds_str);
         none_printed_yet = false;
     }
 

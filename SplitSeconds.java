@@ -67,6 +67,35 @@ class SplitSeconds
 
         seconds = seconds_int + seconds_frac;
 
+        // XXX: DecimalFormat removes trailing zeros unless
+        // setMinimumFractionDigits(precision) is also called.
+        /*
+        DecimalFormat df = new DecimalFormat("0");
+        df.setMaximumFractionDigits(precision);
+        df.setDecimalSeparatorAlwaysShown(false);
+        var seconds_str = df.format(seconds);
+        */
+
+        // XXX: String.format rounds the shortest decimal form half-up, but printf
+        // rounds the exact value half-even.
+        //String seconds_str = String.format("%." + precision + "f", seconds);
+
+        BigDecimal bd = new BigDecimal(seconds).setScale(precision, RoundingMode.HALF_EVEN);
+
+        String seconds_str = bd.toPlainString();
+
+        // Rounding can reach 60 seconds, so carry it into the larger units.
+        if (seconds_str.startsWith("60")) {
+            seconds = 0;
+            if (++minutes == seconds_per_minute) {
+                minutes = 0;
+                if (++hours == 24) {
+                    hours = 0;
+                    ++days;
+                }
+            }
+        }
+
         if (days != 0) {
             result.add(String.valueOf(days) + "d");
         }
@@ -80,23 +109,6 @@ class SplitSeconds
         }
 
         if (seconds != 0 || (print_zero_seconds && result.length() == 0)) {
-            // XXX: DecimalFormat removes trailing zeros unless
-            // setMinimumFractionDigits(precision) is also called.
-            /*
-            DecimalFormat df = new DecimalFormat("0");
-            df.setMaximumFractionDigits(precision);
-            df.setDecimalSeparatorAlwaysShown(false);
-            var seconds_str = df.format(seconds);
-            */
-
-            // XXX: String.format rounds the shortest decimal form half-up, but printf
-            // rounds the exact value half-even.
-            //String seconds_str = String.format("%." + precision + "f", seconds);
-
-            BigDecimal bd = new BigDecimal(seconds).setScale(precision, RoundingMode.HALF_EVEN);
-
-            String seconds_str = bd.toPlainString();
-
             result.add(seconds_str + "s");
         }
 

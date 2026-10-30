@@ -134,6 +134,23 @@ std::string split_seconds(double seconds)
 
     seconds = seconds_int + seconds_frac;
 
+    std::string seconds_str = fmt::format("{:.{}f}", seconds, precision);
+
+    // Rounding can reach 60 seconds, so carry it into the larger units.
+    if (seconds_str.starts_with("60"))
+    {
+        seconds = 0;
+        if (++minutes == seconds_per_minute)
+        {
+            minutes = 0;
+            if (++hours == 24)
+            {
+                hours = 0;
+                ++days;
+            }
+        }
+    }
+
 #ifdef USE_FMT_INT
     // use format_int() and append()
 #else
@@ -189,7 +206,6 @@ std::string split_seconds(double seconds)
     {
         if (!result.empty())
             result.push_back(' ');
-        std::string seconds_str = fmt::format("{:.{}f}", seconds, precision);
         /*
         if (seconds_str.contains('.'))
         {

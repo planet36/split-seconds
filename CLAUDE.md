@@ -65,7 +65,7 @@ All implementations share this logic, so keep it the same when changing any of t
 
 - **Precision** comes from the total value before splitting: 3 decimals below 10, 2 below 100, 1 below 1000, otherwise 0. This means `90061.5` prints `1d 1h 1m 2s`.
 - **Zero units** are omitted. A total of exactly zero prints an empty line, because `print_zero_seconds` is false. A blank input line also prints an empty line.
-- **Rounding** is left to the formatter and doesn't carry into minutes, so `59.9996` prints `60.00s`.
+- **Rounding** is left to the formatter.  Seconds that round up to 60 carry into the larger units, so `59.9996` prints `1m` and `86399.5` prints `1d`.  Each implementation checks the formatted text for this, which keeps the check in step with its formatter.
 - **Java** uses `BigDecimal` with `HALF_EVEN` to match `printf`. `String.format` doesn't match, because it rounds the shortest decimal form half-up instead of the exact stored value, so `0.0045` (stored as `0.00449999...`) gives `0.005s`.
 - **Google** needs a hand-written check before `ToFixed`, which rounds exact ties up (`0.0625` would give `0.063s`, not `0.062s`).
 

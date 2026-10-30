@@ -61,6 +61,20 @@ sub split_seconds {
     # round seconds to SECONDS_NUM_DIGITS digits after the decimal point
     #$seconds = int($seconds * SECONDS_NUM_DIGITS_MULTIPLIER + 0.5) / SECONDS_NUM_DIGITS_MULTIPLIER;
 
+    my $seconds_str = sprintf("%.*f", $precision, $seconds);
+
+    # Rounding can reach 60 seconds, so carry it into the larger units.
+    if (substr($seconds_str, 0, 2) eq "60") {
+        $seconds = 0;
+        if (++$minutes == SECONDS_PER_MINUTE) {
+            $minutes = 0;
+            if (++$hours == 24) {
+                $hours = 0;
+                ++$days;
+            }
+        }
+    }
+
     if ($days != 0) {
         if ($result ne "") {
             $result .= " ";
@@ -91,7 +105,7 @@ sub split_seconds {
         }
 
         #$result .= sprintf("%.*g", $precision, $seconds) . "s";
-        $result .= sprintf("%.*f", $precision, $seconds) . "s";
+        $result .= $seconds_str . "s";
     }
 
     return $result;

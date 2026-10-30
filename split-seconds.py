@@ -59,6 +59,19 @@ def split_seconds(seconds: float) -> str:
 
     seconds = seconds_int + seconds_frac
 
+    seconds_str = f'{seconds:.{precision}f}'
+
+    # Rounding can reach 60 seconds, so carry it into the larger units.
+    if seconds_str.startswith('60'):
+        seconds = 0
+        minutes += 1
+        if minutes == seconds_per_minute:
+            minutes = 0
+            hours += 1
+            if hours == 24:
+                hours = 0
+                days += 1
+
     if days != 0:
         result.append(str(days) + 'd')
 
@@ -69,7 +82,6 @@ def split_seconds(seconds: float) -> str:
         result.append(str(minutes) + 'm')
 
     if seconds != 0 or (print_zero_seconds and not result):
-        seconds_str = f'{seconds:.{precision}f}'
         #if '.' in seconds_str and seconds_str.endswith('0'):
         #   seconds_str = seconds_str.rstrip('0').rstrip('.')
         result.append(seconds_str + 's')
