@@ -106,7 +106,7 @@ constexpr double max_seconds = 0x1.517ffffffffffp+79;
 
 constexpr size_t max_result_size = 32;
 
-//##### XXX: can't get the output I want
+//##### XXX: ToFixed rounds exact ties up, not half-even like printf
 
 std::string split_seconds(double seconds)
 {
