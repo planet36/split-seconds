@@ -8,7 +8,7 @@ The same program written several ways, to compare speed, memory use, and output.
 
 ## Comment style
 
-Follow @COMMENT-STYLE.md when writing code comments, commit messages, and documentation.
+@COMMENT-STYLE.md
 
 ## Commands
 
