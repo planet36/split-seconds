@@ -117,7 +117,7 @@ clean-output:
 clean: clean-input clean-output
 	@$(RM) -v -- $(BINS)
 
-.PHONY: all test clean
+.PHONY: all test clean-input clean-output clean
 
 # https://www.gnu.org/software/make/manual/html_node/Parallel-Disable.html
 .NOTPARALLEL: test
