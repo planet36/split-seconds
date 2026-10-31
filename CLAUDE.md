@@ -36,9 +36,10 @@ Don't use `make -B` to re-run one output: it also regenerates the input file.
 
 ## Build environment
 
+`getline.hpp`, `f_to_s.hpp`, and `i_to_s.hpp` live in `include/`.  The Makefile puts that folder first in `CPPFLAGS`, ahead of anything from the environment.
+
 The build depends on things outside the repo:
 
-- **Headers:** `getline.hpp`, `f_to_s.hpp`, and `i_to_s.hpp` live in `~/.local/include`. They are found only through `-iquote` in the `CPPFLAGS` environment variable.
 - **Language standard:** the Makefile doesn't set one. `CFLAGS` and `CXXFLAGS` in the environment supply `-std=gnu2y` and `-std=gnu++26`, and the Makefile appends to them. The sources use C23 `constexpr` and C++23 `std::println`.
 - **Libraries and tools:** `libfmt`, `double-conversion`, `pypy3`, `/usr/bin/time`, and a JDK with `java.lang.IO` (25+).
 

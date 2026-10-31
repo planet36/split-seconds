@@ -14,6 +14,9 @@ TIME_CMD = /usr/bin/time
 # from run to run.  The serial collector keeps the figure comparable between runs.
 JAVA_OPTS = -XX:+UseSerialGC
 
+# This goes first so that a header on a path from the environment can't replace these.
+CPPFLAGS := -iquote include $(CPPFLAGS)
+
 #CFLAGS += -pg
 #CXXFLAGS += -pg
 CFLAGS += -O3 -flto=auto -march=native

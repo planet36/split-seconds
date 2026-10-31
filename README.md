@@ -39,12 +39,9 @@ The build needs these tools and libraries:
 - A JDK with `java.lang.IO` (25 or later)
 - GNU `time` at `/usr/bin/time`, and GNU `make` and `bash`
 
-The C++ sources also include `getline.hpp`, `f_to_s.hpp`, and `i_to_s.hpp`, which are not in this repo.
-
-The Makefile doesn't set a language standard or a header path, so they come from the environment:
+The Makefile doesn't set a language standard, so it comes from the environment:
 
 ```bash
-export CPPFLAGS="-iquote $HOME/.local/include"
 export CFLAGS=-std=gnu2y
 export CXXFLAGS=-std=gnu++26
 ```
