@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 import sys
-from decimal import Decimal as D, InvalidOperation, ROUND_HALF_UP
+from decimal import Decimal as D, InvalidOperation
 
 seconds_per_day = 60 * 60 * 24
 seconds_per_hour = 60 * 60
@@ -12,13 +12,6 @@ print_zero_seconds = True
 
 # This matches the limit of the implementations that use a double.
 max_seconds = D(2) ** 53
-
-quantize_exp = [
-        D(10) ** -0,
-        D(10) ** -1,
-        D(10) ** -2,
-        D(10) ** -3,
-        ]
 
 def split_seconds(seconds: D) -> str:
 
@@ -53,7 +46,6 @@ def split_seconds(seconds: D) -> str:
     # round seconds to precision digits after the decimal point
     ##### round does round half even
     #seconds = round(seconds_int + seconds_frac, precision)
-    #seconds = (seconds_int + seconds_frac).quantize(quantize_exp[precision], rounding=ROUND_HALF_UP)
 
     seconds = seconds_int + seconds_frac
 
