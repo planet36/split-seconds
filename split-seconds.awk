@@ -155,7 +155,7 @@ return result
 }
 
 NF==0 {
-    print
+    print ""
 }
 
 NF>0 {
