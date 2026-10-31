@@ -5,6 +5,7 @@ BEGIN {
 seconds_per_day = 24*60*60
 seconds_per_hour = 60*60
 seconds_per_minute = 60
+max_seconds = 2^53
 
 # maximum number of digits to print after the decimal point of the seconds value
 # print the result if the rounded elapsed time is zero seconds
@@ -12,14 +13,7 @@ print_zero_seconds = 1
 }
 
 
-function abs(x) {
-return x < 0.0 ? -x : x
-}
-
-
 function split_seconds(seconds,    days, hours, minutes, none_printed_yet, precision, result, seconds_str) {
-
-seconds = abs(seconds)
 
 # Without this, -0 would print as -0.000s.
 if (seconds == 0) {
@@ -78,7 +72,7 @@ if (substr(seconds_str, 1, 2) == "60") {
 }
 
 # Seconds that round to zero count as zero, so they don't print beside larger units.
-if (seconds_str ~ /^[0.]+$/) {
+if (seconds_str + 0 == 0) {
     seconds = 0
 }
 
@@ -164,16 +158,30 @@ if (seconds != 0 || (print_zero_seconds && none_printed_yet)) {
 return result
 }
 
-NF==0 {
-    print ""
+# A field only equals a number when it is numeric text, so this rejects 5abc and NaN without the
+# cost of a regex on every line.
+NF == 1 && $1 == $1 + 0 {
+seconds = $1 + 0
+
+if (seconds < 0 || seconds > max_seconds) {
+    print "Error: out of range: " $0 > "/dev/stderr"
+    exit 1
 }
 
-NF>0 {
-seconds = $1
 #printf("# seconds=%.10f\n", seconds) #####
 result = split_seconds(seconds)
 #if (result != "") {
     print result
 #}
+next
 }
 
+/^[[:space:]]*$/ {
+    print ""
+    next
+}
+
+{
+    print "Error: not a number: " $0 > "/dev/stderr"
+    exit 1
+}

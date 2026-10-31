@@ -7,9 +7,11 @@ gccc $OPTIMIZE_OPTIONS split-seconds.c -o split-seconds-C -lm && d ./split-secon
 
 */
 
+#include <ctype.h>
 #include <math.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 void my_div_f(const double x, const double y, double* quo, double* rem)
@@ -32,21 +34,19 @@ constexpr int seconds_per_minute = 60;
 constexpr bool print_zero_seconds = true;
 
 /*
-This is the longest known output:
+This is the longest possible output:
 
-0x1.7caa73db624d1p+78 ->
-5201514925 100 26m 40s
-(size=22)
+9007199254713599 ->
+104249991373d 23h 59m 59s
+(size=25)
 
-The buffers in split_seconds truncate the days and hours in this output.  A value
-with days has no decimal places, because precision is 0 from 1000 seconds up.
+A value with days has no decimal places, because precision is 0 from 1000 seconds up.
 */
 
 /*
-** 796899343984252562702335 == 0x1.517ffffffffffp+79
-** 796899343984252562702336 == 0x1.518p+79
+** Whole seconds stop being exact in a double above this value.
 */
-constexpr double max_seconds = 0x1.517ffffffffffp+79;
+constexpr double max_seconds = 0x1p+53;
 
 constexpr size_t max_result_size = 32;
 
@@ -54,10 +54,8 @@ void split_seconds(double seconds, char* result, const size_t result_size)
 {
     memset(result, 0, result_size);
 
+    // main rejects negative values, so this only clears the sign of -0.
     seconds = fabs(seconds);
-
-    if (seconds > max_seconds)
-        seconds = max_seconds;
 
     int precision = 0;
 
@@ -133,7 +131,7 @@ void split_seconds(double seconds, char* result, const size_t result_size)
 
     bool none_printed_yet = true;
 
-    char days_buf[sizeof("100000000d")] = {};
+    char days_buf[sizeof("104249991374d")] = {};
     char hours_buf[sizeof(" 10h")] = {};
     char minutes_buf[sizeof(" 10m")] = {};
     char seconds_buf[sizeof(" 10.000s")] = {};
@@ -173,19 +171,37 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
     size_t n = 0;
     while (getline(&line, &n, stdin) >= 0)
     {
-        double seconds = 0;
+        char* first = line;
 
-        const int scanf_ret = sscanf(line, "%lf\n", &seconds);
+        while (isspace((unsigned char)*first))
+            ++first;
 
-        if (scanf_ret == EOF || scanf_ret != 1)
+        char* last = first + strlen(first);
+
+        while (last != first && isspace((unsigned char)last[-1]))
+            --last;
+
+        *last = '\0';
+
+        if (first == last)
         {
             nl;
             continue;
         }
 
-        if (!isfinite(seconds))
+        // strtod also accepts hex, NaN, and infinity, and those need other characters.
+        char* end = NULL;
+        const double seconds = (strspn(first, "0123456789+-.eE") == strlen(first)) ? strtod(first, &end) : 0;
+
+        if (end != last)
         {
-            fprintf(stderr, "Error: not a finite number: %f\n", seconds);
+            fprintf(stderr, "Error: not a number: %s\n", first);
+            return 1;
+        }
+
+        if (!(seconds >= 0 && seconds <= max_seconds))
+        {
+            fprintf(stderr, "Error: out of range: %s\n", first);
             return 1;
         }
 

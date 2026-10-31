@@ -18,6 +18,7 @@ seq 0 0.01    10000
 seq 0 0.1     100000
 seq 0 1.0     1000000
 seq 0 10      10000000
+printf '%s\n' 9007199254713599 9007199254740991 9007199254740992
 } | sort -g -u -o "$RESULT_FILE"
 
 # This alternative runs each seq in parallel.  Its result is identical, but it

@@ -105,8 +105,11 @@ $(TMP_DIR)/split-seconds-decimal-py.output.txt: split-seconds-decimal.py        
 	$(TIME_CMD) --format '# %E\n# %M KB' python3 $<          < $(INPUT_FILE) > $@ || $(RM) -- $@
 
 # Takes about 1 minute
-test: $(OUTPUT_FILES)
+bench: $(OUTPUT_FILES)
 	md5sum $^ | sort -i
+
+check: $(BINS)
+	bash check-input-validation.bash
 
 clean-input:
 	@$(RM) -v -- $(INPUT_FILE)
@@ -117,7 +120,7 @@ clean-output:
 clean: clean-input clean-output
 	@$(RM) -v -- $(BINS)
 
-.PHONY: all test clean-input clean-output clean
+.PHONY: all bench check clean-input clean-output clean
 
 # https://www.gnu.org/software/make/manual/html_node/Parallel-Disable.html
-.NOTPARALLEL: test
+.NOTPARALLEL: bench

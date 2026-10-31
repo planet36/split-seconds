@@ -9,9 +9,8 @@ seconds_per_minute = 60
 
 print_zero_seconds = True
 
-# 796899343984252562702335 == 0x1.517ffffffffffp+79
-# 796899343984252562702336 == 0x1.518p+79
-max_seconds = float.fromhex('0x1.517ffffffffffp+79')
+# Whole seconds stop being exact in a double above this value.
+max_seconds = float.fromhex('0x1p+53')
 
 '''
 def dround(x: float, decimal_places: int):
@@ -24,10 +23,8 @@ def split_seconds(seconds: float) -> str:
 
     result = []
 
+    # The caller rejects negative values, so this only clears the sign of -0.
     seconds = abs(seconds)
-
-    if seconds > max_seconds:
-        seconds = max_seconds
 
     seconds_int = int(seconds)
     seconds_frac = seconds - seconds_int
@@ -100,7 +97,20 @@ for line in sys.stdin:
         print()
         continue
 
-    seconds = float(line)
+    # float also accepts underscores and non-ASCII digits.  The range check below handles NaN and
+    # infinity.
+    try:
+        seconds = float(line)
+    except ValueError:
+        seconds = None
+
+    if seconds is None or '_' in line or not line.isascii():
+        print(f'Error: not a number: {line}', file=sys.stderr)
+        sys.exit(1)
+
+    if not 0 <= seconds <= max_seconds:
+        print(f'Error: out of range: {line}', file=sys.stderr)
+        sys.exit(1)
 
     #print('# seconds={:.10f}'.format(seconds)) #####
     print(split_seconds(seconds))

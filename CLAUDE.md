@@ -14,10 +14,11 @@ Follow @COMMENT-STYLE.md when writing code comments, commit messages, and docume
 
 ```bash
 make                # build all binaries and generate the input file
-make test           # run every implementation, then print md5sums of the outputs (about 1 minute, writes about 850 MB)
+make bench          # time every implementation, then print md5sums of the outputs (about 1 minute, writes about 850 MB)
+make check          # check how every implementation handles valid and invalid input lines, and fail on a mismatch
 make clean-output   # delete outputs, required to re-run implementations whose sources are unchanged
 make clean          # delete binaries, input, and outputs
-make test TMP_DIR=/some/dir   # put the input and output files elsewhere
+make bench TMP_DIR=/some/dir   # put the input and output files elsewhere
 ```
 
 Run one implementation (there is no test framework, so this is the closest thing to a single test):
@@ -38,27 +39,34 @@ Don't use `make -B` to re-run one output: it also regenerates the input file.
 The build depends on things outside the repo:
 
 - **Headers:** `getline.hpp`, `f_to_s.hpp`, and `i_to_s.hpp` live in `~/.local/include`. They are found only through `-iquote` in the `CPPFLAGS` environment variable.
-- **Language standard:** the Makefile doesn't set one. `CFLAGS` and `CXXFLAGS` in the environment supply `-std=gnu2y` and `-std=gnu++26`, and the Makefile appends to them. The sources use C23 `constexpr` and C++23 `std::string::contains`.
+- **Language standard:** the Makefile doesn't set one. `CFLAGS` and `CXXFLAGS` in the environment supply `-std=gnu2y` and `-std=gnu++26`, and the Makefile appends to them. The sources use C23 `constexpr` and C++23 `std::println`.
 - **Libraries and tools:** `libfmt`, `double-conversion`, `pypy3`, `/usr/bin/time`, and a JDK with `java.lang.IO` (25+).
 
 The `gccc`, `gpp`, and `d` commands in source header comments aren't defined in this repo. Use the Makefile.
 
-## How the test works
+## How the tests work
 
-`make test` never fails on a mismatch. It prints md5sums, and you read the groups yourself. The expected result, recorded in the checked-in `output.txt` log along with past timings, is two groups:
+`make bench` never fails on a mismatch.  It prints md5sums, and you read the groups yourself. The expected result, recorded in the checked-in `output.txt` log along with past timings, is two groups:
 
 | Group | Implementations | Why it differs |
 |---|---|---|
 | Baseline | `awk`, `c`, `FMT`, `FMT_INT`, `google`, `java`, `oss`, `perl`, `py`, `pypy`, `to_s` | Binary doubles, printed with round-half-even |
 | Decimal | `decimal-py`, `decimal-pypy` | Parses the input text exactly, so ties land differently (`0.00050` gives `0.000s`, not `0.001s`) |
 
-Each output file holds only the results, one line per input line, so line numbers match the input file.  Timing goes to stderr, not the output files, and it covers a single run that includes writing the output file.  `.NOTPARALLEL: test` keeps runs serial so timings stay comparable.
+Each output file holds only the results, one line per input line, so line numbers match the input file.  Timing goes to stderr, not the output files, and it covers a single run that includes writing the output file.  `.NOTPARALLEL: bench` keeps runs serial so timings stay comparable.
 
-The input comes from `create-input-file.bash`: 6.4 million sorted, unique, non-negative values up to 10,000,000. Anything outside that range is untested, and implementations do disagree there:
+The input comes from `create-input-file.bash`: about 6.4 million sorted, unique, non-negative values up to 10,000,000, plus a few values near the limit of 2^53.
 
-- `perl` doesn't take the absolute value, so `-5` prints `-5.000s`.
-- `awk` and `perl` have no `max_seconds` clamp.
-- Very large values such as `1e30` give a different result in each language, and `c` truncates them to fit its fixed-size buffer.
+`make check` runs `check-input-validation.bash`, which covers what that input can't: lines that must be rejected, blank lines, and accepted spellings of a number.  Unlike `make bench`, it fails on a mismatch.
+
+## Input rules
+
+All implementations share these rules:
+
+- **A valid line** is a decimal number with an optional exponent, from 0 to 2^53 inclusive.  Whitespace around it is allowed, and a blank line prints an empty line.
+- **Anything else stops the run** with an `Error:` message and exit status 1.  That covers non-numeric text, hex, NaN, infinity, negative values, and values above the limit.
+- **Validation uses each language's own parser**, plus a small check for what that parser accepts beyond these rules.  Avoid a regex on the main path: it makes that implementation validate each line twice, which skews the comparison.  It cost `perl` about 2.5 seconds and `awk` about 12 seconds on the full input.
+- **Each parser's result is used as it comes**, so a few extreme values differ.  `1e-999` and `-1e-999` are out of range for `from_chars`.  `decimal` keeps `-1e-999` as a negative value.  `decimal` and `perl` read values just above the limit exactly and reject them, while the others round them down to the limit.
 
 ## Output rules
 
@@ -72,4 +80,4 @@ All implementations share this logic, so keep it the same when changing any of t
 
 ## Adding an implementation
 
-Add it to `OUTPUT_FILES` and write its output rule in the `Makefile`. Compiled implementations also go in `BINS`, and their build outputs need adding to `.gitignore`.
+Add it to `OUTPUT_FILES` and write its output rule in the `Makefile`, and add it to `COMMANDS` in `check-input-validation.bash`.  Compiled implementations also go in `BINS`, and their build outputs need adding to `.gitignore`.

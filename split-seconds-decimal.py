@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 import sys
-from decimal import Decimal as D, ROUND_HALF_UP
+from decimal import Decimal as D, InvalidOperation, ROUND_HALF_UP
 
 seconds_per_day = 60 * 60 * 24
 seconds_per_hour = 60 * 60
@@ -10,11 +10,8 @@ seconds_per_minute = 60
 
 print_zero_seconds = True
 
-# 796899343984252562702335 == 0x1.517ffffffffffp+79
-# 796899343984252562702336 == 0x1.518p+79
-#max_seconds = D.from_float(float.fromhex('0x1.517ffffffffffp+79'))
-max_seconds = D('796899343984252562702335')
-#max_seconds = 796899343984252562702335
+# This matches the limit of the implementations that use a double.
+max_seconds = D(2) ** 53
 
 quantize_exp = [
         D(10) ** -0,
@@ -27,10 +24,8 @@ def split_seconds(seconds: D) -> str:
 
     result = []
 
+    # The caller rejects negative values, so this only clears the sign of -0.
     seconds = abs(seconds)
-
-    if seconds > max_seconds:
-        seconds = max_seconds
 
     seconds_int = int(seconds)
     seconds_frac = seconds - seconds_int
@@ -103,7 +98,20 @@ for line in sys.stdin:
         print()
         continue
 
-    seconds = D(line)
+    # Decimal also accepts underscores and non-ASCII digits.  The range check below handles NaN and
+    # infinity.
+    try:
+        seconds = D(line)
+    except InvalidOperation:
+        seconds = None
+
+    if seconds is None or '_' in line or not line.isascii():
+        print(f'Error: not a number: {line}', file=sys.stderr)
+        sys.exit(1)
+
+    if not seconds.is_finite() or not 0 <= seconds <= max_seconds:
+        print(f'Error: out of range: {line}', file=sys.stderr)
+        sys.exit(1)
 
     #print('# seconds={:.10f}'.format(seconds)) #####
     print(split_seconds(seconds))

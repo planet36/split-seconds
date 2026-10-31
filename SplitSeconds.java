@@ -19,17 +19,22 @@ class SplitSeconds
 
     private static final boolean print_zero_seconds = true;
 
-    private static final double max_seconds = 0x1.517ffffffffffp+79;
+    // Whole seconds stop being exact in a double above this value.
+    private static final double max_seconds = 0x1p+53;
+
+    // Double.parseDouble also accepts hex, NaN, Infinity, and a d or f suffix.  All but hex end in
+    // a letter, and hex needs an x.
+    private static boolean may_parse(String line) {
+        char last = line.charAt(line.length() - 1);
+        return (last == '.' || (last >= '0' && last <= '9')) && line.indexOf('x') < 0 && line.indexOf('X') < 0;
+    }
 
     private static String split_seconds(double seconds) {
 
         StringJoiner result = new StringJoiner(" ");
 
+        // main rejects negative values, so this only clears the sign of -0.
         seconds = Math.abs(seconds);
-
-        if (seconds > max_seconds) {
-            seconds = max_seconds;
-        }
 
         long seconds_int = (long)seconds;
         double seconds_frac = seconds - seconds_int;
@@ -133,7 +138,22 @@ class SplitSeconds
                 continue;
             }
 
-            double seconds = Double.parseDouble(line);
+            double seconds = 0;
+
+            try {
+                if (!may_parse(line)) {
+                    throw new NumberFormatException();
+                }
+                seconds = Double.parseDouble(line);
+            } catch (NumberFormatException e) {
+                System.err.println("Error: not a number: " + line);
+                System.exit(1);
+            }
+
+            if (!(seconds >= 0 && seconds <= max_seconds)) {
+                System.err.println("Error: out of range: " + line);
+                System.exit(1);
+            }
 
             IO.println(split_seconds(seconds));
         }

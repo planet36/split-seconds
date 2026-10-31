@@ -8,6 +8,8 @@ use Scalar::Util qw(looks_like_number);
 use constant SECONDS_PER_DAY => 24*60*60;
 use constant SECONDS_PER_HOUR => 60*60;
 use constant SECONDS_PER_MINUTE => 60;
+# This is an integer because Perl compares 2**53 as a double, which lets 2**53 + 1 through.
+use constant MAX_SECONDS => 9007199254740992;
 
 # maximum number of digits to print after the decimal point of the seconds value
 #use constant SECONDS_NUM_DIGITS => 2;
@@ -19,10 +21,6 @@ sub split_seconds {
 
     my $seconds = $_[0];
     my $result = "";
-
-    if (!looks_like_number($seconds)) {
-        return $result;
-    }
 
     # Without this, -0 would print as -0.000s.
     if ($seconds == 0) {
@@ -81,7 +79,7 @@ sub split_seconds {
     }
 
     # Seconds that round to zero count as zero, so they don't print beside larger units.
-    if ($seconds_str =~ /^[0.]+$/) {
+    if ($seconds_str == 0) {
         $seconds = 0;
     }
 
@@ -130,8 +128,25 @@ while (my $line = <STDIN>) {
         next;
     }
 
+    # looks_like_number also accepts "0 but true", which is the only such text with a t.
+    if (!looks_like_number($line) || index($line, "t") >= 0) {
+        if ($line =~ /^\s*$/) {
+            print "\n";
+            next;
+        }
+
+        print STDERR "Error: not a number: $line\n";
+        exit 1;
+    }
+
     my $seconds = 0;
-    $seconds = $line;
+    $seconds = $line + 0;
+
+    # This also rejects NaN, because every comparison with it is false.
+    if (!($seconds >= 0 && $seconds <= MAX_SECONDS)) {
+        print STDERR "Error: out of range: $line\n";
+        exit 1;
+    }
 
     my $result = "";
     #printf("# seconds=%.10f\n", $seconds); #####
