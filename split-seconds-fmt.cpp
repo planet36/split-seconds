@@ -18,17 +18,6 @@ gpp $OPTIMIZE_OPTIONS -DUSE_FMT_INT split-seconds-fmt.cpp -o split-seconds-FMT_I
 #include <string>
 #include <system_error>
 
-/*
-//##### XXX: only string_view has remove_suffix
-void str_remove_suffix(std::string& s, const std::string::size_type n)
-{
-    if (n > s.size())
-        s.clear();
-    else
-        s.erase(s.size() - n);
-}
-*/
-
 void my_div_f(const double x, const double y, double& quo, double& rem)
 {
     quo = std::trunc(x / y);
@@ -207,16 +196,6 @@ std::string split_seconds(double seconds)
     {
         if (!result.empty())
             result.push_back(' ');
-        /*
-        if (seconds_str.contains('.'))
-        {
-            while (seconds_str.ends_with('0'))
-                str_remove_suffix(seconds_str, 1);
-
-            if (seconds_str.ends_with('.'))
-                str_remove_suffix(seconds_str, 1);
-        }
-        */
 
         result.append(seconds_str);
         result.push_back('s');
