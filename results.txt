@@ -1,42 +1,42 @@
 /usr/bin/time --format '# %E\n# %M KB' awk -f split-seconds.awk           < ./split-seconds.input.txt > split-seconds-awk.output.txt || rm -f -- split-seconds-awk.output.txt
-# 0:07.85
-# 4452 KB
+# 0:07.97
+# 4484 KB
 /usr/bin/time --format '# %E\n# %M KB' ./split-seconds-c                < ./split-seconds.input.txt > split-seconds-c.output.txt || rm -f -- split-seconds-c.output.txt
-# 0:02.03
-# 2184 KB
+# 0:01.96
+# 2048 KB
 /usr/bin/time --format '# %E\n# %M KB' python3 split-seconds-decimal.py          < ./split-seconds.input.txt > split-seconds-decimal-py.output.txt || rm -f -- split-seconds-decimal-py.output.txt
-# 0:11.31
-# 11016 KB
+# 0:10.95
+# 10900 KB
 /usr/bin/time --format '# %E\n# %M KB' pypy3 split-seconds-decimal.py            < ./split-seconds.input.txt > split-seconds-decimal-pypy.output.txt || rm -f -- split-seconds-decimal-pypy.output.txt
-# 0:15.09
-# 205676 KB
+# 0:16.01
+# 206164 KB
 /usr/bin/time --format '# %E\n# %M KB' ./split-seconds-FMT                < ./split-seconds.input.txt > split-seconds-FMT.output.txt || rm -f -- split-seconds-FMT.output.txt
-# 0:00.84
-# 4096 KB
+# 0:00.87
+# 3916 KB
 /usr/bin/time --format '# %E\n# %M KB' ./split-seconds-FMT_INT                < ./split-seconds.input.txt > split-seconds-FMT_INT.output.txt || rm -f -- split-seconds-FMT_INT.output.txt
-# 0:00.73
-# 4048 KB
+# 0:00.79
+# 4056 KB
 /usr/bin/time --format '# %E\n# %M KB' ./split-seconds-google                < ./split-seconds.input.txt > split-seconds-google.output.txt || rm -f -- split-seconds-google.output.txt
-# 0:00.76
-# 4084 KB
-/usr/bin/time --format '# %E\n# %M KB' java SplitSeconds < ./split-seconds.input.txt > split-seconds-java.output.txt || rm -f -- split-seconds-java.output.txt
-# 0:05.05
-# 328408 KB
+# 0:00.81
+# 3888 KB
+/usr/bin/time --format '# %E\n# %M KB' java -XX:+UseSerialGC SplitSeconds < ./split-seconds.input.txt > split-seconds-java.output.txt || rm -f -- split-seconds-java.output.txt
+# 0:03.30
+# 74796 KB
 /usr/bin/time --format '# %E\n# %M KB' ./split-seconds-oss                < ./split-seconds.input.txt > split-seconds-oss.output.txt || rm -f -- split-seconds-oss.output.txt
-# 0:01.86
-# 4256 KB
+# 0:01.85
+# 4292 KB
 /usr/bin/time --format '# %E\n# %M KB' perl split-seconds.pl             < ./split-seconds.input.txt > split-seconds-perl.output.txt || rm -f -- split-seconds-perl.output.txt
-# 0:07.52
-# 6736 KB
+# 0:07.20
+# 6728 KB
 /usr/bin/time --format '# %E\n# %M KB' python3 split-seconds.py          < ./split-seconds.input.txt > split-seconds-py.output.txt || rm -f -- split-seconds-py.output.txt
-# 0:07.25
-# 10132 KB
+# 0:07.35
+# 10408 KB
 /usr/bin/time --format '# %E\n# %M KB' pypy3 split-seconds.py            < ./split-seconds.input.txt > split-seconds-pypy.output.txt || rm -f -- split-seconds-pypy.output.txt
-# 0:02.43
-# 91284 KB
+# 0:02.45
+# 91552 KB
 /usr/bin/time --format '# %E\n# %M KB' ./split-seconds-to_s                < ./split-seconds.input.txt > split-seconds-to_s.output.txt || rm -f -- split-seconds-to_s.output.txt
 # 0:00.72
-# 4264 KB
+# 4200 KB
 md5sum split-seconds-awk.output.txt split-seconds-c.output.txt split-seconds-decimal-py.output.txt split-seconds-decimal-pypy.output.txt split-seconds-FMT.output.txt split-seconds-FMT_INT.output.txt split-seconds-google.output.txt split-seconds-java.output.txt split-seconds-oss.output.txt split-seconds-perl.output.txt split-seconds-py.output.txt split-seconds-pypy.output.txt split-seconds-to_s.output.txt | sort -i
 5bf98a52123b1ae8179d145aceedc02b  split-seconds-FMT.output.txt
 5bf98a52123b1ae8179d145aceedc02b  split-seconds-FMT_INT.output.txt
