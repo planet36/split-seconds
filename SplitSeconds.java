@@ -67,7 +67,7 @@ class SplitSeconds
 
         seconds = seconds_int + seconds_frac;
 
-        // XXX: DecimalFormat removes trailing zeros unless
+        // DecimalFormat removes trailing zeros unless
         // setMinimumFractionDigits(precision) is also called.
         /*
         DecimalFormat df = new DecimalFormat("0");
@@ -76,7 +76,7 @@ class SplitSeconds
         var seconds_str = df.format(seconds);
         */
 
-        // XXX: String.format rounds the shortest decimal form half-up, but printf
+        // String.format rounds the shortest decimal form half-up, but printf
         // rounds the exact value half-even.
         //String seconds_str = String.format("%." + precision + "f", seconds);
 
