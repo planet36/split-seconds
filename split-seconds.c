@@ -29,7 +29,7 @@ constexpr int seconds_per_day = 60 * 60 * 24;
 constexpr int seconds_per_hour = 60 * 60;
 constexpr int seconds_per_minute = 60;
 
-constexpr bool print_zero_seconds = false;
+constexpr bool print_zero_seconds = true;
 
 /*
 This is the longest known output:
@@ -126,6 +126,10 @@ void split_seconds(double seconds, char* result, const size_t result_size)
             }
         }
     }
+
+    // Seconds that round to zero count as zero, so they don't print beside larger units.
+    if (strspn(seconds_str, "0.") == strlen(seconds_str))
+        seconds = 0;
 
     bool none_printed_yet = true;
 

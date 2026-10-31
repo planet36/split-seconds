@@ -32,7 +32,7 @@ constexpr int seconds_per_day = 60 * 60 * 24;
 constexpr int seconds_per_hour = 60 * 60;
 constexpr int seconds_per_minute = 60;
 
-constexpr bool print_zero_seconds = false;
+constexpr bool print_zero_seconds = true;
 
 // https://github.com/google/double-conversion/blob/master/double-conversion/string-to-double.h
 // https://github.com/google/double-conversion/blob/master/double-conversion/double-to-string.h
@@ -199,6 +199,10 @@ std::string split_seconds(double seconds)
             }
         }
     }
+
+    // Seconds that round to zero count as zero, so they don't print beside larger units.
+    if (seconds_str.find_first_not_of("0.") == std::string::npos)
+        seconds = 0;
 
     if (days != 0)
     {

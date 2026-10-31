@@ -17,7 +17,7 @@ class SplitSeconds
     private static final int seconds_per_hour = 60 * 60;
     private static final int seconds_per_minute = 60;
 
-    private static final boolean print_zero_seconds = false;
+    private static final boolean print_zero_seconds = true;
 
     private static final double max_seconds = 0x1.517ffffffffffp+79;
 
@@ -94,6 +94,11 @@ class SplitSeconds
                     ++days;
                 }
             }
+        }
+
+        // Seconds that round to zero count as zero, so they don't print beside larger units.
+        if (bd.signum() == 0) {
+            seconds = 0;
         }
 
         if (days != 0) {

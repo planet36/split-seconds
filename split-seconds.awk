@@ -8,7 +8,7 @@ seconds_per_minute = 60
 
 # maximum number of digits to print after the decimal point of the seconds value
 # print the result if the rounded elapsed time is zero seconds
-print_zero_seconds = 0
+print_zero_seconds = 1
 }
 
 
@@ -20,6 +20,11 @@ return x < 0.0 ? -x : x
 function split_seconds(seconds,    days, hours, minutes, none_printed_yet, precision, result, seconds_str) {
 
 seconds = abs(seconds)
+
+# Without this, -0 would print as -0.000s.
+if (seconds == 0) {
+    seconds = 0
+}
 
 days = 0
 hours = 0
@@ -70,6 +75,11 @@ if (substr(seconds_str, 1, 2) == "60") {
             ++days
         }
     }
+}
+
+# Seconds that round to zero count as zero, so they don't print beside larger units.
+if (seconds_str ~ /^[0.]+$/) {
+    seconds = 0
 }
 
 if (days != 0) {

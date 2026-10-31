@@ -13,7 +13,7 @@ use constant SECONDS_PER_MINUTE => 60;
 #use constant SECONDS_NUM_DIGITS => 2;
 #use constant SECONDS_NUM_DIGITS_MULTIPLIER => 10**SECONDS_NUM_DIGITS;
 # print the result if the rounded elapsed time is zero seconds
-use constant PRINT_ZERO_SECONDS => 0;
+use constant PRINT_ZERO_SECONDS => 1;
 
 sub split_seconds {
 
@@ -22,6 +22,11 @@ sub split_seconds {
 
     if (!looks_like_number($seconds)) {
         return $result;
+    }
+
+    # Without this, -0 would print as -0.000s.
+    if ($seconds == 0) {
+        $seconds = 0;
     }
 
     my $precision = 0;
@@ -73,6 +78,11 @@ sub split_seconds {
                 ++$days;
             }
         }
+    }
+
+    # Seconds that round to zero count as zero, so they don't print beside larger units.
+    if ($seconds_str =~ /^[0.]+$/) {
+        $seconds = 0;
     }
 
     if ($days != 0) {

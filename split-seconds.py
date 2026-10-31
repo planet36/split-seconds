@@ -7,7 +7,7 @@ seconds_per_day = 60 * 60 * 24
 seconds_per_hour = 60 * 60
 seconds_per_minute = 60
 
-print_zero_seconds = False
+print_zero_seconds = True
 
 # 796899343984252562702335 == 0x1.517ffffffffffp+79
 # 796899343984252562702336 == 0x1.518p+79
@@ -71,6 +71,10 @@ def split_seconds(seconds: float) -> str:
             if hours == 24:
                 hours = 0
                 days += 1
+
+    # Seconds that round to zero count as zero, so they don't print beside larger units.
+    if not seconds_str.strip('0.'):
+        seconds = 0
 
     if days != 0:
         result.append(str(days) + 'd')
