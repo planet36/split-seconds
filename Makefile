@@ -10,6 +10,10 @@ TMP_DIR = .
 INPUT_FILE = $(TMP_DIR)/split-seconds.input.txt
 TIME_CMD = /usr/bin/time
 
+# The default collector sizes its heap by timing and total memory, so its peak memory swings
+# from run to run.  The serial collector keeps the figure comparable between runs.
+JAVA_OPTS = -XX:+UseSerialGC
+
 #CFLAGS += -pg
 #CXXFLAGS += -pg
 CFLAGS += -O3 -flto=auto -march=native
@@ -87,7 +91,7 @@ $(TMP_DIR)/split-seconds-awk.output.txt: split-seconds.awk                      
 	$(TIME_CMD) --format '# %E\n# %M KB' awk -f $<           < $(INPUT_FILE) > $@ || $(RM) -- $@
 
 $(TMP_DIR)/split-seconds-java.output.txt: SplitSeconds.class                    $(INPUT_FILE)
-	$(TIME_CMD) --format '# %E\n# %M KB' java $(basename $<) < $(INPUT_FILE) > $@ || $(RM) -- $@
+	$(TIME_CMD) --format '# %E\n# %M KB' java $(JAVA_OPTS) $(basename $<) < $(INPUT_FILE) > $@ || $(RM) -- $@
 
 $(TMP_DIR)/split-seconds-perl.output.txt: split-seconds.pl                      $(INPUT_FILE)
 	$(TIME_CMD) --format '# %E\n# %M KB' perl $<             < $(INPUT_FILE) > $@ || $(RM) -- $@
