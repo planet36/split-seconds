@@ -268,5 +268,11 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
         fmt::println("{}", split_seconds(seconds));
     }
 
+    if (!feof(stdin))
+    {
+        fmt::println(stderr, "Error: could not parse stdin");
+        return 1;
+    }
+
     return 0;
 }
