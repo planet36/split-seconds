@@ -66,43 +66,43 @@ $(INPUT_FILE): create-input-file.bash
 	bash -x $< $@
 
 $(TMP_DIR)/split-seconds-c.output.txt: split-seconds-c                          $(INPUT_FILE)
-	set -o pipefail; $(TIME_CMD) --format '# %E\n# %M KB' ./$<                < $(INPUT_FILE) | paste $(INPUT_FILE) - > $@ || $(RM) -- $@
+	$(TIME_CMD) --format '# %E\n# %M KB' ./$<                < $(INPUT_FILE) > $@ || $(RM) -- $@
 
 $(TMP_DIR)/split-seconds-FMT.output.txt: split-seconds-FMT                      $(INPUT_FILE)
-	set -o pipefail; $(TIME_CMD) --format '# %E\n# %M KB' ./$<                < $(INPUT_FILE) | paste $(INPUT_FILE) - > $@ || $(RM) -- $@
+	$(TIME_CMD) --format '# %E\n# %M KB' ./$<                < $(INPUT_FILE) > $@ || $(RM) -- $@
 
 $(TMP_DIR)/split-seconds-FMT_INT.output.txt: split-seconds-FMT_INT              $(INPUT_FILE)
-	set -o pipefail; $(TIME_CMD) --format '# %E\n# %M KB' ./$<                < $(INPUT_FILE) | paste $(INPUT_FILE) - > $@ || $(RM) -- $@
+	$(TIME_CMD) --format '# %E\n# %M KB' ./$<                < $(INPUT_FILE) > $@ || $(RM) -- $@
 
 $(TMP_DIR)/split-seconds-google.output.txt: split-seconds-google                $(INPUT_FILE)
-	set -o pipefail; $(TIME_CMD) --format '# %E\n# %M KB' ./$<                < $(INPUT_FILE) | paste $(INPUT_FILE) - > $@ || $(RM) -- $@
+	$(TIME_CMD) --format '# %E\n# %M KB' ./$<                < $(INPUT_FILE) > $@ || $(RM) -- $@
 
 $(TMP_DIR)/split-seconds-to_s.output.txt: split-seconds-to_s                    $(INPUT_FILE)
-	set -o pipefail; $(TIME_CMD) --format '# %E\n# %M KB' ./$<                < $(INPUT_FILE) | paste $(INPUT_FILE) - > $@ || $(RM) -- $@
+	$(TIME_CMD) --format '# %E\n# %M KB' ./$<                < $(INPUT_FILE) > $@ || $(RM) -- $@
 
 $(TMP_DIR)/split-seconds-oss.output.txt: split-seconds-oss                      $(INPUT_FILE)
-	set -o pipefail; $(TIME_CMD) --format '# %E\n# %M KB' ./$<                < $(INPUT_FILE) | paste $(INPUT_FILE) - > $@ || $(RM) -- $@
+	$(TIME_CMD) --format '# %E\n# %M KB' ./$<                < $(INPUT_FILE) > $@ || $(RM) -- $@
 
 $(TMP_DIR)/split-seconds-awk.output.txt: split-seconds.awk                      $(INPUT_FILE)
-	set -o pipefail; $(TIME_CMD) --format '# %E\n# %M KB' awk -f $<           < $(INPUT_FILE) | paste $(INPUT_FILE) - > $@ || $(RM) -- $@
+	$(TIME_CMD) --format '# %E\n# %M KB' awk -f $<           < $(INPUT_FILE) > $@ || $(RM) -- $@
 
 $(TMP_DIR)/split-seconds-java.output.txt: SplitSeconds.class                    $(INPUT_FILE)
-	set -o pipefail; $(TIME_CMD) --format '# %E\n# %M KB' java $(basename $<) < $(INPUT_FILE) | paste $(INPUT_FILE) - > $@ || $(RM) -- $@
+	$(TIME_CMD) --format '# %E\n# %M KB' java $(basename $<) < $(INPUT_FILE) > $@ || $(RM) -- $@
 
 $(TMP_DIR)/split-seconds-perl.output.txt: split-seconds.pl                      $(INPUT_FILE)
-	set -o pipefail; $(TIME_CMD) --format '# %E\n# %M KB' perl $<             < $(INPUT_FILE) | paste $(INPUT_FILE) - > $@ || $(RM) -- $@
+	$(TIME_CMD) --format '# %E\n# %M KB' perl $<             < $(INPUT_FILE) > $@ || $(RM) -- $@
 
 $(TMP_DIR)/split-seconds-pypy.output.txt: split-seconds.py                      $(INPUT_FILE)
-	set -o pipefail; $(TIME_CMD) --format '# %E\n# %M KB' pypy3 $<            < $(INPUT_FILE) | paste $(INPUT_FILE) - > $@ || $(RM) -- $@
+	$(TIME_CMD) --format '# %E\n# %M KB' pypy3 $<            < $(INPUT_FILE) > $@ || $(RM) -- $@
 
 $(TMP_DIR)/split-seconds-decimal-pypy.output.txt: split-seconds-decimal.py      $(INPUT_FILE)
-	set -o pipefail; $(TIME_CMD) --format '# %E\n# %M KB' pypy3 $<            < $(INPUT_FILE) | paste $(INPUT_FILE) - > $@ || $(RM) -- $@
+	$(TIME_CMD) --format '# %E\n# %M KB' pypy3 $<            < $(INPUT_FILE) > $@ || $(RM) -- $@
 
 $(TMP_DIR)/split-seconds-py.output.txt: split-seconds.py                        $(INPUT_FILE)
-	set -o pipefail; $(TIME_CMD) --format '# %E\n# %M KB' python3 $<          < $(INPUT_FILE) | paste $(INPUT_FILE) - > $@ || $(RM) -- $@
+	$(TIME_CMD) --format '# %E\n# %M KB' python3 $<          < $(INPUT_FILE) > $@ || $(RM) -- $@
 
 $(TMP_DIR)/split-seconds-decimal-py.output.txt: split-seconds-decimal.py        $(INPUT_FILE)
-	set -o pipefail; $(TIME_CMD) --format '# %E\n# %M KB' python3 $<          < $(INPUT_FILE) | paste $(INPUT_FILE) - > $@ || $(RM) -- $@
+	$(TIME_CMD) --format '# %E\n# %M KB' python3 $<          < $(INPUT_FILE) > $@ || $(RM) -- $@
 
 # Takes about 1 minute
 test: $(OUTPUT_FILES)

@@ -14,7 +14,7 @@ Follow @COMMENT-STYLE.md when writing code comments, commit messages, and docume
 
 ```bash
 make                # build all binaries and generate the input file
-make test           # run every implementation, then print md5sums of the outputs (about 1 minute, writes about 1.5 GB)
+make test           # run every implementation, then print md5sums of the outputs (about 1 minute, writes about 850 MB)
 make clean-output   # delete outputs, required to re-run implementations whose sources are unchanged
 make clean          # delete binaries, input, and outputs
 make test TMP_DIR=/some/dir   # put the input and output files elsewhere
@@ -26,6 +26,7 @@ Run one implementation (there is no test framework, so this is the closest thing
 printf '90061.5\n' | ./split-seconds-c                 # try a value directly
 rm -f split-seconds-py.output.txt && make split-seconds-py.output.txt   # full input, with timing
 diff split-seconds-c.output.txt split-seconds-py.output.txt             # find lines that differ
+paste split-seconds.input.txt split-seconds-c.output.txt split-seconds-py.output.txt | awk -F'\t' '$2 != $3'   # show the inputs that differ
 ```
 
 Output targets are named `split-seconds-<impl>.output.txt`, where `<impl>` is one of `awk`, `c`, `decimal-py`, `decimal-pypy`, `FMT`, `FMT_INT`, `google`, `java`, `oss`, `perl`, `py`, `pypy`, `to_s`.
@@ -51,7 +52,7 @@ The `gccc`, `gpp`, and `d` commands in source header comments aren't defined in 
 | Baseline | `awk`, `c`, `FMT`, `FMT_INT`, `google`, `java`, `oss`, `perl`, `py`, `pypy`, `to_s` | Binary doubles, printed with round-half-even |
 | Decimal | `decimal-py`, `decimal-pypy` | Parses the input text exactly, so ties land differently (`0.00050` gives `0.000s`, not `0.001s`) |
 
-Each output file is the input pasted beside the result (`input<TAB>result`), so a diff shows the value that caused it. Timing goes to stderr, not the output files. `.NOTPARALLEL: test` keeps runs serial so timings stay comparable.
+Each output file holds only the results, one line per input line, so line numbers match the input file.  Timing goes to stderr, not the output files, and it covers a single run that includes writing the output file.  `.NOTPARALLEL: test` keeps runs serial so timings stay comparable.
 
 The input comes from `create-input-file.bash`: 6.4 million sorted, unique, non-negative values up to 10,000,000. Anything outside that range is untested, and implementations do disagree there:
 
