@@ -46,7 +46,7 @@ The `gccc`, `gpp`, and `d` commands in source header comments aren't defined in 
 
 ## How the tests work
 
-`make bench` never fails on a mismatch.  It prints md5sums, and you read the groups yourself. The expected result, recorded in the checked-in `output.txt` log along with past timings, is two groups:
+`make bench` never fails on a mismatch.  It prints md5sums, and you read the groups yourself. The expected result, recorded in the checked-in `results.txt` log along with past timings, is two groups:
 
 | Group | Implementations | Why it differs |
 |---|---|---|
