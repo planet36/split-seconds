@@ -21,8 +21,8 @@ seq 0 10      10000000
 } | sort -g -u -o "$RESULT_FILE"
 
 # This alternative runs each seq in parallel.  Its result is identical, but it
-# isn't measurably faster.  Most of the time is spent in sort, which probably
-# reads its inputs one at a time.
+# isn't measurably faster.  Most of the time is spent in sort, which reads its
+# inputs one at a time.
 # sort -g -u -o "$RESULT_FILE-NEW" \
 # <(seq 0 0.00001 10      ) \
 # <(seq 0 0.0001  100     ) \
