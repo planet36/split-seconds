@@ -7,6 +7,10 @@ javac SplitSeconds.java && d SplitSeconds.class
 
 */
 
+import java.io.BufferedOutputStream;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.StringJoiner;
@@ -128,6 +132,15 @@ class SplitSeconds
 
     public static void main(String[] args) throws java.io.IOError
     {
+        // System.out makes one write call per line, even to a file.  This buffers it like the
+        // other implementations, flushing each line only on a terminal.
+        System.setOut(new PrintStream(
+            new BufferedOutputStream(new FileOutputStream(FileDescriptor.out)),
+            System.console() != null));
+
+        // This covers the System.exit calls below as well as the normal return.
+        Runtime.getRuntime().addShutdownHook(new Thread(System.out::flush));
+
         try {
             String line = null;
 

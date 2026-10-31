@@ -53,7 +53,7 @@ The `gccc`, `gpp`, and `d` commands in source header comments aren't defined in 
 | Baseline | `awk`, `c`, `FMT`, `FMT_INT`, `google`, `java`, `oss`, `perl`, `py`, `pypy`, `to_s` | Binary doubles, printed with round-half-even |
 | Decimal | `decimal-py`, `decimal-pypy` | Parses the input text exactly, so ties land differently (`0.00050` gives `0.000s`, not `0.001s`) |
 
-Each output file holds only the results, one line per input line, so line numbers match the input file.  Timing goes to stderr, not the output files, and it covers a single run that includes writing the output file.  `.NOTPARALLEL: bench` keeps runs serial so timings stay comparable.
+Each output file holds only the results, one line per input line, so line numbers match the input file.  Timing goes to stderr, not the output files, and it covers a single run that includes writing the output file.  `.NOTPARALLEL: bench` keeps runs serial so timings stay comparable.  Java buffers stdout itself, because `System.out` makes one write call per line.
 
 The input comes from `create-input-file.bash`: about 6.4 million sorted, unique, non-negative values up to 10,000,000, plus a few values near the limit of 2^53.
 
