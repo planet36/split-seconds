@@ -224,8 +224,6 @@ std::string split_seconds(double seconds)
     return result;
 }
 
-#define nl (void)std::putchar('\n')
-
 int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 {
     std::string line;
@@ -237,7 +235,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 
         if (scanf_ret == EOF || scanf_ret != 1)
         {
-            nl;
+            fmt::println("");
             continue;
         }
 

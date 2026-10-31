@@ -10,9 +10,9 @@ gpp $OPTIMIZE_OPTIONS split-seconds-google.cpp -o split-seconds-google -ldouble-
 #include "getline.hpp"
 
 #include <double-conversion/double-conversion.h>
-#include <fmt/format.h>
 
 #include <cmath>
+#include <print>
 #include <string>
 
 void my_div_f(const double x, const double y, double& quo, double& rem)
@@ -236,8 +236,6 @@ std::string split_seconds(double seconds)
     return result;
 }
 
-#define nl (void)std::putchar('\n')
-
 int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 {
     std::string line;
@@ -246,7 +244,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
         // The converter returns empty_string_value for a blank line.
         if (line.find_first_not_of(" \t\n\v\f\r") == std::string::npos)
         {
-            nl;
+            std::println("");
             continue;
         }
 
@@ -255,22 +253,22 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 
         if (std::isnan(seconds))
         {
-            fmt::println(stderr, "Error: not a number: {}", line);
+            std::println(stderr, "Error: not a number: {}", line);
             return 1;
         }
 
         if (!std::isfinite(seconds))
         {
-            fmt::println(stderr, "Error: not a finite number: {}", seconds);
+            std::println(stderr, "Error: not a finite number: {}", seconds);
             return 1;
         }
 
-        fmt::println("{}", split_seconds(seconds));
+        std::println("{}", split_seconds(seconds));
     }
 
     if (!feof(stdin))
     {
-        fmt::println(stderr, "Error: could not parse stdin");
+        std::println(stderr, "Error: could not parse stdin");
         return 1;
     }
 

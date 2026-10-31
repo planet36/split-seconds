@@ -51,13 +51,13 @@ split-seconds-FMT_INT: split-seconds-fmt.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -DUSE_FMT_INT $^ -o $@ -lfmt
 
 split-seconds-google: split-seconds-google.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)               $^ -o $@ -ldouble-conversion -lfmt
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS)               $^ -o $@ -ldouble-conversion
 
 split-seconds-to_s: split-seconds-to_s.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)               $^ -o $@ -lfmt
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS)               $^ -o $@
 
 split-seconds-oss: split-seconds.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)               $^ -o $@ -lfmt
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS)               $^ -o $@
 
 SplitSeconds.class: SplitSeconds.java
 	javac                                        $^

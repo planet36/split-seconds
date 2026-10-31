@@ -9,9 +9,8 @@ gpp $OPTIMIZE_OPTIONS split-seconds.cpp -o split-seconds && d ./split-seconds
 
 #include "getline.hpp"
 
-#include <fmt/format.h>
-
 #include <cmath>
+#include <print>
 #include <sstream>
 #include <string>
 
@@ -183,8 +182,6 @@ std::string split_seconds(double seconds)
     return oss.str();
 }
 
-#define nl (void)std::putchar('\n')
-
 int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 {
     std::string line;
@@ -196,22 +193,22 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 
         if (scanf_ret == EOF || scanf_ret != 1)
         {
-            nl;
+            std::println("");
             continue;
         }
 
         if (!std::isfinite(seconds))
         {
-            fmt::println(stderr, "Error: not a finite number: {}", seconds);
+            std::println(stderr, "Error: not a finite number: {}", seconds);
             return 1;
         }
 
-        fmt::println("{}", split_seconds(seconds));
+        std::println("{}", split_seconds(seconds));
     }
 
     if (!feof(stdin))
     {
-        fmt::println(stderr, "Error: could not parse stdin");
+        std::println(stderr, "Error: could not parse stdin");
         return 1;
     }
 
