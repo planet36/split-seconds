@@ -11,9 +11,12 @@ gpp $OPTIMIZE_OPTIONS split-seconds-to_s.cpp -o split-seconds-to_s && d ./split-
 #include "i_to_s.hpp"
 #include "getline.hpp"
 
+#include <cctype>
+#include <charconv>
 #include <cmath>
 #include <print>
 #include <string>
+#include <system_error>
 
 /*
 //##### XXX: only string_view has remove_suffix
@@ -203,14 +206,31 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
     std::string line;
     while (getline(line, stdin))
     {
-        double seconds = 0;
+        const char* first = line.data();
+        const char* last = first + line.size();
 
-        const int scanf_ret = sscanf(line.c_str(), "%lf\n", &seconds);
+        while (first != last && std::isspace(static_cast<unsigned char>(*first)))
+            ++first;
+        while (first != last && std::isspace(static_cast<unsigned char>(last[-1])))
+            --last;
 
-        if (scanf_ret == EOF || scanf_ret != 1)
+        if (first == last)
         {
             std::println("");
             continue;
+        }
+
+        // from_chars doesn't accept a leading plus sign.
+        if (*first == '+' && last - first > 1 && first[1] != '-')
+            ++first;
+
+        double seconds = 0;
+        const auto [ptr, ec] = std::from_chars(first, last, seconds);
+
+        if (ec != std::errc{} || ptr != last)
+        {
+            std::println(stderr, "Error: not a number: {}", line);
+            return 1;
         }
 
         if (!std::isfinite(seconds))
