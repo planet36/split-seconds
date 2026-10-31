@@ -8,6 +8,7 @@ gccc $OPTIMIZE_OPTIONS split-seconds.c -o split-seconds-C -lm && d ./split-secon
 */
 
 #include <ctype.h>
+#include <errno.h>
 #include <math.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -214,7 +215,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 
     if (!feof(stdin))
     {
-        fprintf(stderr, "Error: could not parse stdin\n");
+        fprintf(stderr, "Error: could not read stdin: %s\n", strerror(errno));
         return 1;
     }
 

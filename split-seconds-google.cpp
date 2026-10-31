@@ -11,7 +11,9 @@ gpp $OPTIMIZE_OPTIONS split-seconds-google.cpp -o split-seconds-google -ldouble-
 
 #include <double-conversion/double-conversion.h>
 
+#include <cerrno>
 #include <cmath>
+#include <cstring>
 #include <print>
 #include <string>
 
@@ -267,7 +269,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 
     if (!feof(stdin))
     {
-        std::println(stderr, "Error: could not parse stdin");
+        std::println(stderr, "Error: could not read stdin: {}", std::strerror(errno));
         return 1;
     }
 

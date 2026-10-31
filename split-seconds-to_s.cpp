@@ -12,8 +12,10 @@ gpp $OPTIMIZE_OPTIONS split-seconds-to_s.cpp -o split-seconds-to_s && d ./split-
 #include "getline.hpp"
 
 #include <cctype>
+#include <cerrno>
 #include <charconv>
 #include <cmath>
+#include <cstring>
 #include <print>
 #include <string>
 #include <system_error>
@@ -221,7 +223,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 
     if (!feof(stdin))
     {
-        std::println(stderr, "Error: could not parse stdin");
+        std::println(stderr, "Error: could not read stdin: {}", std::strerror(errno));
         return 1;
     }
 

@@ -13,8 +13,10 @@ gpp $OPTIMIZE_OPTIONS -DUSE_FMT_INT split-seconds-fmt.cpp -o split-seconds-FMT_I
 #include <fmt/format.h>
 
 #include <cctype>
+#include <cerrno>
 #include <charconv>
 #include <cmath>
+#include <cstring>
 #include <string>
 #include <system_error>
 
@@ -248,7 +250,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 
     if (!feof(stdin))
     {
-        fmt::println(stderr, "Error: could not parse stdin");
+        fmt::println(stderr, "Error: could not read stdin: {}", std::strerror(errno));
         return 1;
     }
 

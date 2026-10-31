@@ -3,6 +3,7 @@
 
 use strict;
 use warnings;
+use IO::Handle;
 use Scalar::Util qw(looks_like_number);
 
 use constant SECONDS_PER_DAY => 24*60*60;
@@ -155,4 +156,9 @@ while (my $line = <STDIN>) {
     #if ($result ne "") {
         print $result . "\n";
     #}
+}
+
+if (STDIN->error) {
+    print STDERR "Error: could not read stdin: $!\n";
+    exit 1;
 }

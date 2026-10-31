@@ -68,7 +68,8 @@ do
         ACTUAL="$(printf '%s\n' "$INPUT" | $COMMAND 2>&1)"
         STATUS=$?
         [[ $STATUS -eq 0 ]] || fail "$COMMAND" "$INPUT" "exit status $STATUS"
-        [[ "$ACTUAL" == "$EXPECTED" ]] || fail "$COMMAND" "$INPUT" "expected '$EXPECTED', got '$ACTUAL'"
+        [[ "$ACTUAL" == "$EXPECTED" ]] ||
+            fail "$COMMAND" "$INPUT" "expected '$EXPECTED', got '$ACTUAL'"
     done
 
     for INPUT in "${REJECTED[@]}"
@@ -77,13 +78,21 @@ do
         ACTUAL="$(printf '%s\n' "$INPUT" | $COMMAND 2>&1 > /dev/null)"
         STATUS=$?
         [[ $STATUS -eq 1 ]] || fail "$COMMAND" "$INPUT" "exit status $STATUS"
-        [[ "$ACTUAL" == Error:* && "$ACTUAL" != *$'\n'* ]] || fail "$COMMAND" "$INPUT" "unexpected message '${ACTUAL:0:60}'"
+        [[ "$ACTUAL" == Error:* && "$ACTUAL" != *$'\n'* ]] ||
+            fail "$COMMAND" "$INPUT" "unexpected message '${ACTUAL:0:60}'"
     done
 
     # An error stops the run, but earlier lines still print.
     # shellcheck disable=SC2086
     ACTUAL="$(printf '1\nabc\n2\n' | $COMMAND 2> /dev/null)"
     [[ "$ACTUAL" == '1.000s' ]] || fail "$COMMAND" '1,abc,2' "expected '1.000s', got '$ACTUAL'"
+
+    # A read error must not look like success.  The message varies, because gawk and Python can
+    # stop with their own before the program's code handles it.
+    # shellcheck disable=SC2086
+    $COMMAND > /dev/null 2>&1 0> /dev/null && fail "$COMMAND" 'write-only stdin' 'exit status 0'
+    # shellcheck disable=SC2086
+    $COMMAND > /dev/null 2>&1 < / && fail "$COMMAND" 'directory as stdin' 'exit status 0'
 done
 
 if (( FAILURES > 0 ))

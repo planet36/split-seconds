@@ -185,3 +185,11 @@ next
     print "Error: not a number: " $0 > "/dev/stderr"
     exit 1
 }
+
+# gawk stops by itself on most read errors, but it only warns about a directory.
+END {
+    if (ERRNO != "") {
+        print "Error: could not read stdin: " ERRNO > "/dev/stderr"
+        exit 1
+    }
+}

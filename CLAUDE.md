@@ -65,6 +65,7 @@ All implementations share these rules:
 
 - **A valid line** is a decimal number with an optional exponent, from 0 to 2^53 inclusive.  Whitespace around it is allowed, and a blank line prints an empty line.
 - **Anything else stops the run** with an `Error:` message and exit status 1.  That covers non-numeric text, hex, NaN, infinity, negative values, and values above the limit.
+- **A read error stops the run** with `Error: could not read stdin: <reason>` and exit status 1.  `gawk` and Python can stop first with their own message, so `make check` only requires a nonzero exit.
 - **Validation uses each language's own parser**, plus a small check for what that parser accepts beyond these rules.  Avoid a regex on the main path: it makes that implementation validate each line twice, which skews the comparison.  It cost `perl` about 2.5 seconds and `awk` about 12 seconds on the full input.
 - **Each parser's result is used as it comes**, so a few extreme values differ.  `1e-999` and `-1e-999` are out of range for `from_chars`.  `decimal` keeps `-1e-999` as a negative value.  `decimal` and `perl` read values just above the limit exactly and reject them, while the others round them down to the limit.
 

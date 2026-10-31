@@ -83,15 +83,25 @@ def split_seconds(seconds: D) -> str:
     return ' '.join(result)
 
 
-for line in sys.stdin:
+def stdin_lines():
+
+    # This covers reading only, because errors in the caller's loop don't pass through here.
+    try:
+        yield from sys.stdin
+    except OSError as e:
+        print(f'Error: could not read stdin: {e.strerror}', file=sys.stderr)
+        sys.exit(1)
+
+
+for line in stdin_lines():
     line = line.strip()
 
     if not line: # empty
         print()
         continue
 
-    # Decimal also accepts underscores and non-ASCII digits.  The range check below handles NaN and
-    # infinity.
+    # Decimal also accepts underscores and non-ASCII digits.  The range check below handles
+    # NaN and infinity.
     try:
         seconds = D(line)
     except InvalidOperation:
