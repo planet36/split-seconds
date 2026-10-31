@@ -38,14 +38,8 @@ constexpr bool print_zero_seconds = false;
 // https://github.com/google/double-conversion/blob/master/double-conversion/double-to-string.h
 
 constexpr int s_to_d_flags =
-    double_conversion::StringToDoubleConverter::ALLOW_HEX|
-    double_conversion::StringToDoubleConverter::ALLOW_OCTALS|
-    double_conversion::StringToDoubleConverter::ALLOW_TRAILING_JUNK|
     double_conversion::StringToDoubleConverter::ALLOW_LEADING_SPACES|
     double_conversion::StringToDoubleConverter::ALLOW_TRAILING_SPACES|
-    double_conversion::StringToDoubleConverter::ALLOW_SPACES_AFTER_SIGN|
-    double_conversion::StringToDoubleConverter::ALLOW_CASE_INSENSITIVITY|
-    double_conversion::StringToDoubleConverter::ALLOW_HEX_FLOATS |
     0
     ;
 
@@ -66,8 +60,8 @@ const auto s_to_d = double_conversion::StringToDoubleConverter(
         s_to_d_flags,
         empty_string_value,
         junk_string_value,
-        infinity_symbol,
-        nan_symbol);
+        nullptr,
+        nullptr);
 
 const auto d_to_s = double_conversion::DoubleToStringConverter(
         d_to_s_flags,
@@ -249,14 +243,20 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
     std::string line;
     while (getline(line, stdin))
     {
-        double seconds = 0;
-
-        const int scanf_ret = sscanf(line.c_str(), "%lf\n", &seconds);
-
-        if (scanf_ret == EOF || scanf_ret != 1)
+        // The converter returns empty_string_value for a blank line.
+        if (line.find_first_not_of(" \t\n\v\f\r") == std::string::npos)
         {
             nl;
             continue;
+        }
+
+        int processed_count = 0;
+        const double seconds = s_to_d.StringToDouble(line.c_str(), static_cast<int>(line.size()), &processed_count);
+
+        if (std::isnan(seconds))
+        {
+            fmt::println(stderr, "Error: not a number: {}", line);
+            return 1;
         }
 
         if (!std::isfinite(seconds))
