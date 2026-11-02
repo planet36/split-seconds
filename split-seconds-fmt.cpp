@@ -46,7 +46,7 @@ This is the longest possible output:
 104249991373d 23h 59m 59s
 (size=25)
 
-A value with days has no decimal places, because precision is 0 from 1000 seconds up.
+A value with days has no decimal places because precision is 0 from 1000 seconds up.
 */
 
 /*
@@ -144,7 +144,7 @@ std::string split_seconds(double seconds)
         seconds = 0;
 
 #ifdef USE_FMT_INT
-    // use format_int() and append()
+    // Use format_int() and append().
 #else
     auto bii = std::back_inserter(result); // std::back_insert_iterator
 #endif
@@ -154,7 +154,7 @@ std::string split_seconds(double seconds)
         if (!result.empty())
             result.push_back(' ');
 #ifdef USE_FMT_INT
-        // fmt::to_string is slightly faster than std::to_string
+        // fmt::to_string is slightly faster than std::to_string.
         //result.append(fmt::to_string(days));
 
         result.append(fmt::format_int(days).str());
@@ -169,7 +169,7 @@ std::string split_seconds(double seconds)
         if (!result.empty())
             result.push_back(' ');
 #ifdef USE_FMT_INT
-        // fmt::to_string is slightly faster than std::to_string
+        // fmt::to_string is slightly faster than std::to_string.
         //result.append(fmt::to_string(hours));
 
         result.append(fmt::format_int(hours).str());
@@ -184,7 +184,7 @@ std::string split_seconds(double seconds)
         if (!result.empty())
             result.push_back(' ');
 #ifdef USE_FMT_INT
-        // fmt::to_string is slightly faster than std::to_string
+        // fmt::to_string is slightly faster than std::to_string.
         //result.append(fmt::to_string(minutes));
 
         result.append(fmt::format_int(minutes).str());
@@ -238,7 +238,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
             return 1;
         }
 
-        // This also rejects NaN, because every comparison with it is false.
+        // This also rejects NaN because every comparison with it is false.
         if (!(seconds >= 0 && seconds <= max_seconds))
         {
             fmt::println(stderr, "Error: out of range: {}", line);

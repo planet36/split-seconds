@@ -43,8 +43,8 @@ def split_seconds(seconds: D) -> str:
     if seconds_int >= seconds_per_minute:
         (minutes, seconds_int) = divmod(seconds_int, seconds_per_minute)
 
-    # round seconds to precision digits after the decimal point
-    ##### round does round half even
+    # Round seconds to precision digits after the decimal point.
+    ##### round does round half even.
     #seconds = round(seconds_int + seconds_frac, precision)
 
     seconds = seconds_int + seconds_frac
@@ -85,7 +85,7 @@ def split_seconds(seconds: D) -> str:
 
 def stdin_lines():
 
-    # This covers reading only, because errors in the caller's loop don't pass through here.
+    # This covers reading only because errors in the caller's loop don't pass through here.
     try:
         yield from sys.stdin
     except OSError as e:
@@ -96,7 +96,7 @@ def stdin_lines():
 for line in stdin_lines():
     line = line.strip()
 
-    if not line: # empty
+    if not line:  # empty
         print()
         continue
 

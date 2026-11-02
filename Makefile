@@ -111,7 +111,7 @@ $(TMP_DIR)/split-seconds-py.output.txt: split-seconds.py                        
 $(TMP_DIR)/split-seconds-decimal-py.output.txt: split-seconds-decimal.py        $(INPUT_FILE)
 	$(TIME_CMD) --format '# %E\n# %M KB' python3 $<          < $(INPUT_FILE) > $@ || $(RM) -- $@
 
-# Takes about 1 minute
+# This takes about 1 minute.
 bench: $(OUTPUT_FILES)
 	md5sum $^ | sort -i
 

@@ -8,7 +8,7 @@ seconds_per_minute = 60
 max_seconds = 2^53
 
 # maximum number of digits to print after the decimal point of the seconds value
-# print the result if the rounded elapsed time is zero seconds
+# Print the result if the rounded elapsed time is zero seconds.
 print_zero_seconds = 1
 }
 
@@ -54,7 +54,7 @@ minutes = int(seconds / seconds_per_minute)
 seconds = seconds % seconds_per_minute
 }
 
-# round seconds to precision digits after the decimal point
+# Round seconds to precision digits after the decimal point.
 #seconds = int(seconds * seconds_num_digits_multiplier + 0.5) / seconds_num_digits_multiplier
 
 seconds_str = sprintf("%.*f", precision, seconds)
@@ -85,7 +85,7 @@ if (days != 0) {
     }
     none_printed_yet = 0
 
-    # slower
+    # This alternative is slower.
     #if (length(result) > 0) {
     #   result = result " " days "d"
     #}
@@ -103,7 +103,7 @@ if (hours != 0) {
     }
     none_printed_yet = 0
 
-    # slower
+    # This alternative is slower.
     #if (length(result) > 0) {
     #   result = result " " hours "h"
     #}
@@ -121,7 +121,7 @@ if (minutes != 0) {
     }
     none_printed_yet = 0
 
-    # slower
+    # This alternative is slower.
     #if (length(result) > 0) {
     #   result = result " " minutes "m"
     #}
@@ -142,7 +142,7 @@ if (seconds != 0 || (print_zero_seconds && none_printed_yet)) {
     }
     none_printed_yet = 0
 
-    # slower
+    # This alternative is slower.
     #if (length(result) > 0) {
     #   result = result " " sprintf("%.*g", precision, seconds) "s"
     #}

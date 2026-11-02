@@ -45,7 +45,7 @@ This is the longest possible output:
 104249991373d 23h 59m 59s
 (size=25)
 
-A value with days has no decimal places, because precision is 0 from 1000 seconds up.
+A value with days has no decimal places because precision is 0 from 1000 seconds up.
 */
 
 /*
@@ -217,7 +217,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
             return 1;
         }
 
-        // This also rejects NaN, because every comparison with it is false.
+        // This also rejects NaN because every comparison with it is false.
         if (!(seconds >= 0 && seconds <= max_seconds))
         {
             std::println(stderr, "Error: out of range: {}", line);

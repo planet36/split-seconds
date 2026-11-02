@@ -12,10 +12,10 @@ use constant SECONDS_PER_MINUTE => 60;
 # This is an integer because Perl compares 2**53 as a double, which lets 2**53 + 1 through.
 use constant MAX_SECONDS => 9007199254740992;
 
-# maximum number of digits to print after the decimal point of the seconds value
+# This is the maximum number of digits to print after the decimal point of the seconds value.
 #use constant SECONDS_NUM_DIGITS => 2;
 #use constant SECONDS_NUM_DIGITS_MULTIPLIER => 10**SECONDS_NUM_DIGITS;
-# print the result if the rounded elapsed time is zero seconds
+# Print the result if the rounded elapsed time is zero seconds.
 use constant PRINT_ZERO_SECONDS => 1;
 
 sub split_seconds {
@@ -62,7 +62,7 @@ sub split_seconds {
         $seconds -= $minutes * SECONDS_PER_MINUTE;
     }
 
-    # round seconds to SECONDS_NUM_DIGITS digits after the decimal point
+    # Round seconds to SECONDS_NUM_DIGITS digits after the decimal point.
     #$seconds = int($seconds * SECONDS_NUM_DIGITS_MULTIPLIER + 0.5) / SECONDS_NUM_DIGITS_MULTIPLIER;
 
     my $seconds_str = sprintf("%.*f", $precision, $seconds);
@@ -143,7 +143,7 @@ while (my $line = <STDIN>) {
     my $seconds = 0;
     $seconds = $line + 0;
 
-    # This also rejects NaN, because every comparison with it is false.
+    # This also rejects NaN because every comparison with it is false.
     if (!($seconds >= 0 && $seconds <= MAX_SECONDS)) {
         print STDERR "Error: out of range: $line\n";
         exit 1;

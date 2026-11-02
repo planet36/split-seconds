@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 # Check how every implementation handles input that the main test input can't
-# cover.  1e-999, -1e-999, and values just above the limit are left out, because
+# cover.  1e-999, -1e-999, and values just above the limit are left out because
 # each parser is allowed to treat them differently.
 
 declare -r COMMANDS=(
@@ -87,7 +87,7 @@ do
     ACTUAL="$(printf '1\nabc\n2\n' | $COMMAND 2> /dev/null)"
     [[ "$ACTUAL" == '1.000s' ]] || fail "$COMMAND" '1,abc,2' "expected '1.000s', got '$ACTUAL'"
 
-    # A read error must not look like success.  The message varies, because gawk and Python can
+    # A read error must not look like success.  The message varies because gawk and Python can
     # stop with their own before the program's code handles it.
     # shellcheck disable=SC2086
     $COMMAND > /dev/null 2>&1 0> /dev/null && fail "$COMMAND" 'write-only stdin' 'exit status 0'
