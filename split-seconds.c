@@ -3,7 +3,7 @@
 
 /*
 
-gccc $OPTIMIZE_OPTIONS split-seconds.c -o split-seconds-C -lm && d ./split-seconds-C
+gccc $OPTIMIZE_OPTIONS split-seconds.c -o split-seconds-c -lm && d ./split-seconds-c
 
 */
 

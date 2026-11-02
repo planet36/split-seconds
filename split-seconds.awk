@@ -7,7 +7,6 @@ seconds_per_hour = 60*60
 seconds_per_minute = 60
 max_seconds = 2^53
 
-# maximum number of digits to print after the decimal point of the seconds value
 # Print the result if the rounded elapsed time is zero seconds.
 print_zero_seconds = 1
 }

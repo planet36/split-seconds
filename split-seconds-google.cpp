@@ -257,7 +257,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
             return 1;
         }
 
-        // This also rejects NaN because every comparison with it is false.
+        // The isnan check above already rejected NaN.
         if (!(seconds >= 0 && seconds <= max_seconds))
         {
             std::println(stderr, "Error: out of range: {}", line);

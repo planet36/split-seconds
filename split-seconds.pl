@@ -129,7 +129,8 @@ while (my $line = <STDIN>) {
         next;
     }
 
-    # looks_like_number also accepts "0 but true", which is the only such text with a t.
+    # looks_like_number also accepts "0 but true", which this rejects by looking for a t.  That
+    # also catches "Infinity", which then reports "not a number" instead of "out of range".
     if (!looks_like_number($line) || index($line, "t") >= 0) {
         if ($line =~ /^\s*$/) {
             print "\n";

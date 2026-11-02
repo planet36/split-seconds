@@ -3,7 +3,7 @@
 
 /*
 
-gpp $OPTIMIZE_OPTIONS split-seconds.cpp -o split-seconds && d ./split-seconds
+gpp $OPTIMIZE_OPTIONS split-seconds.cpp -o split-seconds-oss && d ./split-seconds-oss
 
 */
 
