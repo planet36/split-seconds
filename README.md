@@ -1,6 +1,6 @@
 # split-seconds
 
-The same small program written several ways, to compare speed, memory use, and output.  Each implementation reads one number of seconds per line from stdin and prints it split into days, hours, minutes, and seconds.
+This repo holds the same small program written several ways, to compare speed, memory use, and output.  Each implementation reads one number of seconds per line from stdin and prints it split into days, hours, minutes, and seconds.
 
 ```console
 $ printf '90061.5\n59.9996\n0.25\n1020.5\n0\n' | ./split-seconds-c
