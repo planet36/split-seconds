@@ -239,7 +239,7 @@ std::string split_seconds(double seconds)
 int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 {
     std::string line;
-    while (getline(line, stdin))
+    while (getline(line, stdin, true))
     {
         // The converter returns empty_string_value for a blank line.
         if (line.find_first_not_of(" \t\n\v\f\r") == std::string::npos)

@@ -188,7 +188,7 @@ std::string split_seconds(double seconds)
 int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 {
     std::string line;
-    while (getline(line, stdin))
+    while (getline(line, stdin, true))
     {
         const char* first = line.data();
         const char* last = first + line.size();
